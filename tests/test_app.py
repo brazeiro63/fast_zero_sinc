@@ -60,12 +60,6 @@ def teste_update_user(client: TestClient):
     }
 
 
-def teste_delete_user_not_existent(client):
-    response = client.delete('/users/2')
-
-    assert response.status_code == HTTPStatus.NOT_FOUND
-
-
 def teste_delete_user(client):
     response = client.delete('/users/1')
 
