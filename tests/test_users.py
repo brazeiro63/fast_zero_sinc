@@ -1,0 +1,70 @@
+from http import HTTPStatus
+
+from fast_zero.schemas import UserPublic
+
+
+def test_create_user(client):
+    response = client.post(
+        '/users/',
+        json={
+            'username': 'Test User',
+            'password': 'usertestpwd',
+            'email': 'testuser@server.com',
+        },
+    )
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json() == {
+        'id': 1,
+        'username': 'Test User',
+        'email': 'testuser@server.com',
+    }
+
+
+def test_read_users(client, token):
+    response = client.get(
+        '/users/', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'users': [
+            {'id': 1, 'username': 'Test User', 'email': 'testuser@server.com'}
+        ]
+    }
+
+
+def test_read_users_with_user(client, user, token):
+    user_schema = UserPublic.model_validate(user).model_dump()
+    response = client.get(
+        '/users/', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'users': [user_schema]}
+
+
+def teste_update_user(client, user, token):
+    response = client.put(
+        f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'id': f'{user.id}',
+            'username': 'Test Modified User',
+            'password': 'usertestpwd',
+            'email': 'testmodifieduser@server.com',
+        },
+    )
+
+    assert response.json() == {
+        'id': 1,
+        'username': 'Test Modified User',
+        'email': 'testmodifieduser@server.com',
+    }
+
+
+def teste_delete_user(client, user, token):
+    response = client.delete(
+        f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.json() == {'message': 'User deleted!'}
