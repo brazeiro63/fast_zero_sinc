@@ -68,8 +68,7 @@ def update_user(
 ):
     if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail='Not enough permission'
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permission'
         )
 
     current_user.email = user.email
@@ -91,8 +90,7 @@ def delete_user(
 ):
     if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail='Not enough permission'
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permission'
         )
 
     session.delete(current_user)
